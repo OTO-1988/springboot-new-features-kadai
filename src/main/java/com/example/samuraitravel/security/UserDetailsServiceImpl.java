@@ -30,7 +30,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			authorities.add(new SimpleGrantedAuthority(userRoleName));
 			return new UserDetailsImpl(user, authorities);
 		} catch(Exception e) {
-			throw new UsernameNotFoundException("ユーザーは見つかりませんでした。");
+			throw new UsernameNotFoundException("ユーザーが見つかりませんでした。");
 		}
 	}
 }

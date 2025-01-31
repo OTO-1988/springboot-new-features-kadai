@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"><html xmlns:th="https://www.thymeleaf.org">
+<html xmlns:th="https://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 	<head>
 		<div th:replace="~{fragment :: meta}"></div>
 		
@@ -19,11 +19,11 @@
 							
 							<h1 class="mb-4 text-center">民宿一覧</h1>
 							
-							<div class="d-flex justify-content-between align-item-end flex-wrap">
+							<div class="d-flex justify-content-between align-items-end flex-wrap">
 								<form method="get" th:action="@{/admin/houses}" class="mb-3">
 									<div class="input-group">
 										<input type="text" class="form-control" name="keyword" th:value="${keyword}" placeholder="民宿名">
-										<button type="submit" class="btn test-white shadou-sm samuraitorabel-btn">検索</button>
+										<button type="submit" class="btn text-white shadow-sm samuraitravel-btn">検索</button>
 									</div>
 								</form>
 								<a th:href="@{/admin/houses/register}" class="btn text-white shadow-sm mb-3 samuraitravel-btn">登録</a>

@@ -57,8 +57,8 @@ public class ReservationService {
 	
 	//宿泊料金を計算する
 	public Integer calculateAmount(LocalDate checkinDate,LocalDate checkoutDate,Integer price) {
-		long numberOfNigths = ChronoUnit.DAYS.between(checkinDate, checkoutDate);
-		int amount = price * (int)numberOfNigths;
+		long numberOfNights = ChronoUnit.DAYS.between(checkinDate, checkoutDate);
+		int amount = price * (int)numberOfNights;
 		return amount;
 	}
 }

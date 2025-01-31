@@ -70,7 +70,7 @@ public class AuthController {
 	}
 	
 	@GetMapping("/signup/verify")
-	public String verify(@RequestParam(name = "token") String token, Model model) {
+	public String verify(@RequestParam String token, Model model) {
 		VerificationToken verificationToken = verificationTokenService.getVerificationToken(token);
 		
 		if(verificationToken != null) {

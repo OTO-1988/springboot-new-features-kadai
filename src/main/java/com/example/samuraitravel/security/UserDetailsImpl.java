@@ -27,7 +27,7 @@ public class UserDetailsImpl implements UserDetails {
 		return user.getPassword();
 	}
 	
-	//ログイン時に利用するユーザー名（メールアドレス）返す
+	//ログイン時に利用するユーザー名（メールアドレス）を返す
 	@Override
 	public String getUsername() {
 		return user.getEmail();

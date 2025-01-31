@@ -21,11 +21,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.samuraitravel.entity.House;
 import com.example.samuraitravel.entity.Reservation;
+import com.example.samuraitravel.entity.Review;
 import com.example.samuraitravel.entity.User;
 import com.example.samuraitravel.form.ReservationInputForm;
 import com.example.samuraitravel.form.ReservationRegisterForm;
 import com.example.samuraitravel.repository.HouseRepository;
 import com.example.samuraitravel.repository.ReservationRepository;
+import com.example.samuraitravel.repository.ReviewRepository;
 import com.example.samuraitravel.security.UserDetailsImpl;
 import com.example.samuraitravel.service.ReservationService;
 import com.example.samuraitravel.service.StripeService;
@@ -35,12 +37,14 @@ public class ReservationController {
 	private final ReservationRepository reservationRepository;
 	private final HouseRepository houseRepository;
 	private final ReservationService reservationService;
+    private final ReviewRepository reviewRepository; // 追加: レビュー状況を取得するためのリポジトリ
 	private final StripeService stripeService;
 	
-	public ReservationController(ReservationRepository reservationRepository,HouseRepository houseRepository,ReservationService reservationService, StripeService stripeService) {
+	public ReservationController(ReservationRepository reservationRepository,HouseRepository houseRepository,ReservationService reservationService,ReviewRepository reviewRepository, StripeService stripeService) {
 		this.reservationRepository = reservationRepository;
 		this.houseRepository = houseRepository;
 		this.reservationService = reservationService;
+		this.reviewRepository = reviewRepository;
 		this.stripeService = stripeService;
 		
 	}
@@ -50,13 +54,19 @@ public class ReservationController {
 		User user = userDetailsImpl.getUser();
 		Page<Reservation> reservationPage = reservationRepository.findByUserOrderByCreatedAtDesc(user, pageable);
 		
-		model.addAttribute("reservationPage", reservationPage);
-		
-		return "reservations/index";
+		// 各 Reservation に対応するレビューを取得し、設定
+		reservationPage.forEach(reservation -> {
+	        Review review = reviewRepository.findByReservationId(reservation.getId()).orElse(null);
+	        reservation.setReview(review);
+	    });
+
+	    model.addAttribute("reservationPage", reservationPage);
+
+	    return "reservations/index";
 	}
 	
 	@GetMapping("/houses/{id}/reservations/input")
-	public String input(@PathVariable(name = "id")Integer id,
+	public String input(@PathVariable Integer id,
 						@ModelAttribute @Validated ReservationInputForm reservationInputForm,
 						BindingResult bindingResult,
 						RedirectAttributes redirectAttributes,
@@ -76,7 +86,7 @@ public class ReservationController {
 							if(bindingResult.hasErrors()) {
 								model.addAttribute("house",house);
 								model.addAttribute("errorMessage","予約内容に不備があります。");
-								return "/houses/show";
+								return "houses/show";
 							}
 							redirectAttributes.addFlashAttribute("reservationInputForm", reservationInputForm);
 							
@@ -84,7 +94,7 @@ public class ReservationController {
 						}
 	
 	@GetMapping("/houses/{id}/reservations/confirm")
-	public String confirm(	@PathVariable(name = "id")Integer id,
+	public String confirm(	@PathVariable Integer id,
 							@ModelAttribute ReservationInputForm reservationInputForm,
 							@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
 							HttpServletRequest httpServletRequest,
@@ -97,7 +107,7 @@ public class ReservationController {
 		LocalDate checkinDate = reservationInputForm.getCheckinDate();
 		LocalDate checkoutDate = reservationInputForm.getCheckoutDate();
 		
-		// 宿泊料金を取得する
+		// 宿泊料金を計算する
 		Integer price = house.getPrice();
 		Integer amount = reservationService.calculateAmount(checkinDate, checkoutDate, price);
 		

@@ -1,5 +1,7 @@
 package com.example.samuraitravel.controller;
 
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -12,23 +14,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.samuraitravel.entity.House;
+import com.example.samuraitravel.entity.Review;
 import com.example.samuraitravel.form.ReservationInputForm;
 import com.example.samuraitravel.repository.HouseRepository;
+import com.example.samuraitravel.repository.ReviewRepository;
 
 @Controller
 @RequestMapping("/houses")
 public class HouseController {
 	 private final HouseRepository houseRepository;
+	 private final ReviewRepository reviewRepository;
 	 
-	 public HouseController(HouseRepository houseRepository) {
-		this.houseRepository = houseRepository;            
+	 public HouseController(HouseRepository houseRepository, ReviewRepository reviewRepository) {
+		this.houseRepository = houseRepository;
+		this.reviewRepository = reviewRepository;
 	 }
 	 
 	 @GetMapping
-	 public String index(@RequestParam(name = "keyword", required = false) String keyword,
-			 			 @RequestParam(name = "area", required = false) String area,
-			 			 @RequestParam(name = "price", required = false) Integer price,
-			 			 @RequestParam(name = "order", required = false) String order,
+	 public String index(@RequestParam(required = false) String keyword,
+			 			 @RequestParam(required = false) String area,
+			 			 @RequestParam(required = false) Integer price,
+			 			 @RequestParam(required = false) String order,
 			 			 @PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC) Pageable pageable, Model model)
 	 {
 		 Page<House> housePage;
@@ -69,12 +75,25 @@ public class HouseController {
 	 }
 	 
 	 @GetMapping("/{id}")
-	 public String show(@PathVariable(name = "id") Integer id,Model model) {
-		 House house = houseRepository.getReferenceById(id);
-		 
-		 model.addAttribute("house",house);
-		 model.addAttribute("reservationInputForm", new ReservationInputForm());
-		 
-		 return "houses/show";
+	 public String show(
+	         @PathVariable Integer id,
+	         Model model,
+	         @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Direction.DESC) Pageable pageable) {
+
+	     // 民宿情報を取得（存在しない場合は例外スロー）
+	     House house = houseRepository.findById(id)
+	             .orElseThrow(() -> new EntityNotFoundException("Invalid house ID: " + id));
+
+	     // ページング可能なレビュー一覧を取得
+	     Page<Review> reviewPage = reviewRepository.findByHouse(house, pageable);
+
+	     // モデルにデータを追加
+	     model.addAttribute("house", house);
+	     model.addAttribute("reviews", reviewPage.getContent()); // レビューのリスト
+	     model.addAttribute("reviewPage", reviewPage); // ページ情報（ページネーション用）
+	     model.addAttribute("totalReviews", reviewPage.getTotalElements()); // レビューの総数
+	     model.addAttribute("reservationInputForm", new ReservationInputForm());
+
+	     return "houses/show"; // 詳細画面のテンプレート
 	 }
 }

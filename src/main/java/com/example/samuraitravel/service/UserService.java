@@ -55,13 +55,13 @@ public class UserService {
 		userRepository.save(user);
 	}
 	
-	//メールアドレスが登録済みかどうかチェックする
+	//メールアドレスが登録済みかどうかをチェックする
 	public boolean isEmailRegistered(String email) {
 		User user = userRepository.findByEmail(email);
 		return user != null;
 	}
 	
-	//パスワードとパスワード（確認用）の入力値が一致しているかどうかチェックする
+	//パスワードとパスワード（確認用）の入力値が一致するかどうかをチェックする
 	public boolean isSamePassword(String password, String passwordConfirmation) {
 		return password.equals(passwordConfirmation);
 	}
@@ -73,7 +73,7 @@ public class UserService {
 		userRepository.save(user);
 	}
 	
-	//メールアドレスが変更されたかどうかチェックする
+	//メールアドレスが変更されたかどうかをチェックする
 	public boolean isEmailChanged(UserEditForm userEditForm) {
 		User currentUser = userRepository.getReferenceById(userEditForm.getId());
 		return !userEditForm.getEmail().equals(currentUser.getEmail());

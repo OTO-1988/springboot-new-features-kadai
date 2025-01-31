@@ -49,4 +49,5 @@ public class House {
 	
 	@Column(name = "updated_at", insertable = false, updatable = false)
 	private Timestamp updatedAt;
+	
 }

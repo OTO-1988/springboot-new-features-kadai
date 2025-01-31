@@ -24,7 +24,7 @@ public class AdminUserController {
 	}
 	
 	@GetMapping
-	public String index(@RequestParam(name = "keyword", required = false)String keyword, @PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC) Pageable pageable,Model model) {
+	public String index(@RequestParam(required = false)String keyword, @PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC) Pageable pageable,Model model) {
 		Page<User> userPage;
 		
 		if(keyword != null && !keyword.isEmpty()) {
@@ -40,7 +40,7 @@ public class AdminUserController {
 	}
 	
 	@GetMapping("/{id}")
-	public String show(@PathVariable(name = "id") Integer id, Model model) {
+	public String show(@PathVariable Integer id, Model model) {
 		User user = userRepository.getReferenceById(id);
 		
 		model.addAttribute("user",user);

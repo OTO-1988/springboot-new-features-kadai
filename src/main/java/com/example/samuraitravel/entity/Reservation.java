@@ -3,6 +3,7 @@ package com.example.samuraitravel.entity;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 import lombok.Data;
@@ -18,35 +20,53 @@ import lombok.Data;
 @Table(name = "reservations")
 @Data
 public class Reservation {
-
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Integer id;
+	
+	@ManyToOne
+	@JoinColumn(name = "house_id")
+	private House house; 
+	
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+	private User user;     
+	
+	@Column(name = "checkin_date")
+	private LocalDate checkinDate;
+	
+	@Column(name = "checkout_date")
+	private LocalDate checkoutDate;   
+	
+	@Column(name = "number_of_people")
+	private Integer numberOfPeople; 
+	
+	@Column(name = "amount")
+	private Integer amount;     
+	
+	@Column(name = "created_at", insertable = false, updatable = false)
+	private Timestamp createdAt;
+	
+	@Column(name = "updated_at", insertable = false, updatable = false)
+	private Timestamp updatedAt;
+	
+	 // レビューに関するプロパティを追加
+    @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
+    private Review review;
     
-    @ManyToOne
-    @JoinColumn(name = "house_id")
-    private House house; 
+    private Integer reservationId;
+    private String houseName;
+    private boolean reviewPosted; // レビュー済みかどうか
     
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;     
-    
-    @Column(name = "checkin_date")
-    private LocalDate checkinDate;
-    
-    @Column(name = "checkout_date")
-    private LocalDate checkoutDate;   
-    
-    @Column(name = "number_of_people")
-    private Integer numberOfPeople; 
-    
-    @Column(name = "amount")
-    private Integer amount;     
-    
-    @Column(name = "created_at", insertable = false, updatable = false)
-    private Timestamp createdAt;
-    
-    @Column(name = "updated_at", insertable = false, updatable = false)
-    private Timestamp updatedAt;
+    public boolean isReviewPosted() {
+        return reviewPosted;
+    }
+
+    public void setReviewPosted(boolean reviewPosted) {
+        this.reviewPosted = reviewPosted;
+    }
+    private Integer reviewId;    // 投稿済みレビューのID（編集・削除用）
+
 }
