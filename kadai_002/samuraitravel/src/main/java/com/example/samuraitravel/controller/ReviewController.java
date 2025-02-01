@@ -150,15 +150,27 @@ public class ReviewController {
         return "redirect:/reservations"; // 更新後に予約一覧へ
     }
     
+    @Transactional
     @PostMapping("/delete/{id}")
     public String deleteReview(@PathVariable Integer id) {
-        // レビューが存在するか確認
-        Review review = reviewRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Review not found for ID: " + id));
+        try {
+            // レビュー削除前に関連する予約情報のレビューIDをnullに設定
+            Review review = reviewRepository.findById(id)
+                    .orElseThrow(() -> new IllegalArgumentException("Review not found for ID: " + id));
 
-        // 削除処理
-        reviewRepository.delete(review);
+            Reservation reservation = review.getReservation();
+            if (reservation != null) {
+                reservation.setReview(null); // レビューIDをnullにする
+                reservationRepository.save(reservation); // 予約を保存
+            }
 
-        return "redirect:/reservations"; // 更新後に予約一覧へ
+            reviewRepository.deleteById(id); // レビューを削除
+            reviewRepository.flush(); // 強制的にデータベースに反映
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "errorPage"; // エラー発生時にエラーページに遷移
+        }
+        return "redirect:/reservations"; // 削除後、予約一覧画面にリダイレクト
     }
 }
