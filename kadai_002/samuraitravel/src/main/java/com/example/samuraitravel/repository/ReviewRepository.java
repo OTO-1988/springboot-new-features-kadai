@@ -6,11 +6,13 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import com.example.samuraitravel.entity.House;
 import com.example.samuraitravel.entity.Reservation;
 import com.example.samuraitravel.entity.Review;
 
+@Repository
 public interface ReviewRepository extends JpaRepository<Review, Integer> {
     // ページング付きでレビューを取得（既存）
     Page<Review> findByHouseOrderByCreatedAtDesc(House houseId, Pageable pageable);
