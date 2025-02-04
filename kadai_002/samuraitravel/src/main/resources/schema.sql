@@ -62,8 +62,10 @@ CREATE TABLE IF NOT EXISTS reviews (
     user_id INT NOT NULL,
     rating INT NOT NULL,
     comment TEXT,
+    reservation_id INT ,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (house_id) REFERENCES houses (id),
-    FOREIGN KEY (user_id) REFERENCES users (id)   
+    FOREIGN KEY (user_id) REFERENCES users (id), 
+    FOREIGN KEY (reservation_id) REFERENCES reservations (id) 
 );

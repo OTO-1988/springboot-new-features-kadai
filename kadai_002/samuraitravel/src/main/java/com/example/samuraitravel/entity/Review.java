@@ -48,9 +48,7 @@ public class Review {
 
     @Column(name = "updated_at", insertable = false, updatable = false, columnDefinition = "TIMESTAMP")
     private Timestamp updatedAt;
-    
-    private String review;
-    
+
     public Integer getHouseId() {
         return this.house != null ? this.house.getId() : null;
     }

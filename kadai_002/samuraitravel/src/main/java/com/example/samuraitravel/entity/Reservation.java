@@ -56,17 +56,4 @@ public class Reservation {
     @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
     private Review review;
     
-    private Integer reservationId;
-    private String houseName;
-    private boolean reviewPosted; // レビュー済みかどうか
-    
-    public boolean isReviewPosted() {
-        return reviewPosted;
-    }
-
-    public void setReviewPosted(boolean reviewPosted) {
-        this.reviewPosted = reviewPosted;
-    }
-    private Integer reviewId;    // 投稿済みレビューのID（編集・削除用）
-
 }

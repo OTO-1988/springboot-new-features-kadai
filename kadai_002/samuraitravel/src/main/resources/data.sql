@@ -89,3 +89,19 @@ INSERT IGNORE INTO reservations (id, house_id, user_id, checkin_date, checkout_d
 INSERT IGNORE INTO reservations (id, house_id, user_id, checkin_date, checkout_date, number_of_people, amount) VALUES (10, 10, 1, '2023-04-01', '2023-04-02', 6, 10000);
 INSERT IGNORE INTO reservations (id, house_id, user_id, checkin_date, checkout_date, number_of_people, amount) VALUES (11, 11, 1, '2023-04-01', '2023-04-02', 2, 6000);
 
+-- reviewsテーブル
+INSERT IGNORE INTO reviews (id, house_id, user_id, rating, comment, reservation_id, created_at, updated_at)
+VALUES 
+(1, 4, 14, 5, '最高でした！また泊まりたいです！', NULL, NOW(), NOW()),
+(2, 4, 12, 4, '良かったですが、少し騒がしかったです。', NULL, NOW(), NOW()),
+(3, 4, 13, 3, '普通でした。特に不満はありません。', NULL, NOW(), NOW()),
+(4, 4, 4, 2, '掃除が行き届いていなかったのが残念。', NULL, NOW(), NOW()),
+(5, 4, 5, 1, 'サービスがあまり良くなかった。', NULL, NOW(), NOW()),
+(6, 4, 6, 5, 'ロケーションが最高！絶対また行きます！', NULL, NOW(), NOW()),
+(7, 4, 7, 5, 'オーナーさんが親切でとても楽しかった。', NULL, NOW(), NOW()),
+(8, 4, 8, 4, '部屋が広くて快適でした！', NULL, NOW(), NOW()),
+(9, 4, 9, 3, '料金相応の宿泊施設です。', NULL, NOW(), NOW()),
+(10, 4, 10, 2, 'ちょっと期待外れでした。', NULL, NOW(), NOW()),
+(11, 4, 1, 4, 'テスト投稿です。', 1, NOW(), NOW()),
+(12, 4, 1, 5, 'testonotoukou', 14, NOW(), NOW());
+
