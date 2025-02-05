@@ -2,6 +2,8 @@ package com.example.samuraitravel.controller;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,7 +45,7 @@ public class FavoriteController {
 
     // お気に入り一覧の表示
     @GetMapping("/list")
-    public String showFavorites(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model, Pageable pageable) {
+    public String showFavorites(@AuthenticationPrincipal UserDetailsImpl userDetails, Model model,@PageableDefault(page = 0, size = 10, sort = "id", direction = Direction.ASC) Pageable pageable) {
         User user = userDetails.getUser(); // ログイン中のユーザーを取得
         Page<House> favorites = favoriteService.getFavorites(user.getId(), pageable); // ユーザーのお気に入りを取得
         model.addAttribute("favorites", favorites); // お気に入りの民宿リストを渡す
@@ -51,4 +53,5 @@ public class FavoriteController {
         model.addAttribute("currentPage", favorites.getNumber()); // 現在のページ番号を渡す
         return "favorites/list"; // お気に入り一覧画面を返す
     }
+
 }
